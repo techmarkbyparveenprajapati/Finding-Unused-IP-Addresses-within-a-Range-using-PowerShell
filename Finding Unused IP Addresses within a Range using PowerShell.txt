@@ -1,0 +1,16 @@
+$ipRangeStart = "192.168.0.1"
+$ipRangeEnd = "192.168.0.254"
+
+$unusedIPs = @()
+
+$ipRange = 20..40 | ForEach-Object { $ip = "$ipRangeStart"; $ipArray = $ip -split "\."; $ipArray[3] = $_; $ipArray -join "." }
+
+foreach ($ip in $ipRange) {
+    $result = Test-Connection -ComputerName $ip -Count 1 -Quiet -ErrorAction SilentlyContinue
+
+    if (-not $result) {
+        $unusedIPs += $ip
+    }
+}
+
+$unusedIPs
